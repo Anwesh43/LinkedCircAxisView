@@ -12,6 +12,29 @@ import android.graphics.Canvas
 
 val nodes : Int = 5
 
+fun Canvas.drawLCANode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = (w / 2) / nodes
+    val size : Float = gap / 5
+    save()
+    translate((i * gap + gap - size) * scale, 0f)
+    drawCircle(0f, 0f, size/2, paint)
+    restore()
+}
+
+fun Canvas.drawInAxis(cb : () -> Unit) {
+    save()
+    translate(width.toFloat()/2, height.toFloat()/2)
+    for (i in 0..3) {
+        save()
+        rotate(90f * i)
+        cb()
+        restore()
+    }
+    restore()
+}
+
 class LCAView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
