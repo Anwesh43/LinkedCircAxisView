@@ -143,4 +143,31 @@ class LCAView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class LinkedCircAxis(var i : Int) {
+
+        private var curr : LCANode = LCANode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawInAxis {
+                curr.draw(canvas, paint)
+            }
+        }
+
+        fun update(stopcb : (Int, Float) -> Unit) {
+            curr.update {i, scale ->
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(i, scale)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
+        }
+
+    }
 }
