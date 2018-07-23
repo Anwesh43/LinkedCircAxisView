@@ -18,9 +18,9 @@ fun Canvas.drawLCANode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
     val gap : Float = (w / 2) / nodes
-    val size : Float = gap / 5
+    val size : Float = 2 * gap / 5
     save()
-    translate((i * gap + gap - size) * scale, 0f)
+    translate((i * gap + gap - size) * (1 - scale), 0f)
     drawCircle(0f, 0f, size/2, paint)
     restore()
 }
@@ -123,6 +123,7 @@ class LCAView(ctx : Context) : View(ctx) {
 
         fun draw(canvas : Canvas, paint : Paint) {
             canvas.drawLCANode(i, state.scale, paint)
+            next?.draw(canvas, paint)
         }
 
         fun update(stopcb : (Int, Float) -> Unit) {
@@ -150,13 +151,16 @@ class LCAView(ctx : Context) : View(ctx) {
 
     data class LinkedCircAxis(var i : Int) {
 
-        private var curr : LCANode = LCANode(0)
+        private var root : LCANode = LCANode(0)
+
+        private var curr : LCANode = root
 
         private var dir : Int = 1
 
         fun draw(canvas : Canvas, paint : Paint) {
+            paint.color = Color.parseColor("#4CAF50")
             canvas.drawInAxis {
-                curr.draw(canvas, paint)
+                root.draw(canvas, paint)
             }
         }
 
@@ -202,7 +206,7 @@ class LCAView(ctx : Context) : View(ctx) {
         fun create(activity : Activity) : LCAView {
             val view : LCAView = LCAView(activity)
             activity.setContentView(view)
-            return view 
+            return view
         }
     }
 }
