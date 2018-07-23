@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Canvas
+import android.graphics.Color
 
 val nodes : Int = 5
 
@@ -168,6 +169,28 @@ class LCAView(ctx : Context) : View(ctx) {
         fun startUpdating(startcb : () -> Unit) {
             curr.startUpdating(startcb)
         }
+    }
 
+    data class Renderer(var view : LCAView) {
+
+        private val animator : Animator = Animator(view)
+
+        private val lca : LinkedCircAxis = LinkedCircAxis(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lca.draw(canvas, paint)
+            animator.animate {
+                lca.update {i, scale ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lca.startUpdating {
+                animator.start()
+            }
+        }
     }
 }
