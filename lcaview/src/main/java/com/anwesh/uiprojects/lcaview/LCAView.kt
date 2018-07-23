@@ -99,4 +99,48 @@ class LCAView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class LCANode(var i : Int, val state : State = State()) {
+
+        var prev : LCANode? = null
+
+        var next : LCANode? = null
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = LCANode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        init {
+            addNeighbor()
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawLCANode(i, state.scale, paint)
+        }
+
+        fun update(stopcb : (Int, Float) -> Unit) {
+            state.update {
+                stopcb(i, it)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : LCANode {
+            var curr : LCANode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
 }
